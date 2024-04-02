@@ -1,5 +1,4 @@
 import { Group } from '@mantine/core';
-import pianoImage from './icons/piano.svg'
 import { FloatingLabelInput } from './lib';
 
 export default function IndexPage() {
@@ -20,7 +19,7 @@ export default function IndexPage() {
 
   return (
     <div style={{
-      backgroundImage: `url(${pianoImage})`,
+      backgroundImage: 'url(/piano.jpg)',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',

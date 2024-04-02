@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Container, Anchor, Group, Burger, Box } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from './DoubleHeader.module.css';
-import subito from '../../icons/subito.png';
+import Image from 'next/image';
 
 const mainLinks = [
   { link: '#', label: 'Home' },
@@ -31,7 +31,7 @@ export function DoubleHeader() {
   return (
     <header className={classes.header}>
       <Container className={classes.inner}>
-        <img src = {subito} alt="Subito Icon" style={{ width: 34, height: 34 }}></img>
+        <Image src = "/SubitoLogo.png" alt="Subito Icon" width = {100} height = {100}></Image>
         <Box className={classes.links} visibleFrom="sm">
           <Group gap={0} justify="flex-end" className={classes.mainLinks}>
             {mainItems}

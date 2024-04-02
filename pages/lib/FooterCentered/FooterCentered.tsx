@@ -4,7 +4,7 @@ import { MantineLogo } from '@mantinex/mantine-logo';
 import classes from './FooterCentered.module.css';
 
 const links = [
-  { link: '#', label: 'Contact' },
+  { label: 'Contact' , link: 'https://www.linkedin.com/in/sean-z-cai/'},
   { link: '#', label: 'Blog' },
 ];
 
@@ -25,7 +25,7 @@ export function FooterCentered() {
   return (
     <div className={classes.footer}>
       <div className={classes.inner}>
-        <p>Copyright @2024</p>
+        <p>Copyright Subito @2024</p>
 
         <Group className={classes.links}>{items}</Group>
 
