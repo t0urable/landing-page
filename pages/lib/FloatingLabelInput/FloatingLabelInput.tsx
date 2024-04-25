@@ -15,7 +15,8 @@ export function FloatingLabelInput() {
       const { data, error } = await supabase
         .from('wait_listers')
         .insert([
-          { email: value }
+          { email: value 
+          }
         ]);
     
     if (error) {

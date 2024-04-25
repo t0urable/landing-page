@@ -2,8 +2,6 @@ import { Image, Container, Title, Button, Group, Text, List, ThemeIcon, rem } fr
 import { IconCheck } from '@tabler/icons-react';
 import image from './image.svg';
 import classes from './HeroBullets.module.css';
-import HoverCardWaitlist from './HoverCardWaitlist';
-import { FloatingLabelInput } from '../FloatingLabelInput/FloatingLabelInput';
 
 export function HeroBullets() {
   return (

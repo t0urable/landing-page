@@ -33,7 +33,7 @@ export default function IndexPage() {
         <h1 style={headerStyle}>Adaptive, Personalized <br/>Sightreading Sessions</h1>
         <h2 style={subHeaderStyle}>Anytime, Anywhere</h2>
         <FloatingLabelInput></FloatingLabelInput>
-        <p style={{ color: 'rgba(255, 255, 255, 0.75)', marginBottom: '2em' }}>
+        <p style={{ color: 'rgba(255, 255, 255, 0.75)'}}>
           Find unseen before sheet music at your level, personalized for your skill
         </p>
       </Group>

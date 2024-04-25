@@ -1,15 +1,21 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Container, Anchor, Group, Burger, Box } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from './DoubleHeader.module.css';
 import Image from 'next/image';
 
 const mainLinks = [
-  { link: '#', label: 'Home' },
-  { link: '#', label: 'Coming Soon' },
+  { link: '/', label: 'Home' },
+  { link: '/', label: 'Waitlist Input' },
+  { link: '/', label: 'See some of our music'},
+  { link: '/', label: 'See the product'}
 ];
 
-export function DoubleHeader() {
+interface DoubleHeaderProps {
+  setpageTracker: (index: number) => void;
+}
+
+export function DoubleHeader({setpageTracker}: DoubleHeaderProps) {
   const [opened, { toggle }] = useDisclosure(false);
   const [active, setActive] = useState(0);
 
@@ -22,6 +28,12 @@ export function DoubleHeader() {
       onClick={(event) => {
         event.preventDefault();
         setActive(index);
+
+        //this function passes the current index to app.tsx
+        setpageTracker(index);
+
+        //debugging
+        console.log(index);
       }}
     >
       {item.label}
