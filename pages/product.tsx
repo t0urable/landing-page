@@ -9,7 +9,7 @@ export default function Product() {
     <MantineProvider theme={theme} defaultColorScheme="dark">
         <div style={{ margin: '2%' }}>
             <h1>Upload files below!</h1>
-            <FileUpload /> {/* File upload component */}
+              <FileUpload /> {/* File upload component */}
             <div style = {{ margin: '2%' }}>
               <iframe
                 src="https://learnsubito.com"

@@ -41,12 +41,12 @@ const MainContent = ({ Component, pageProps }) => {
   }
 
   return (
-    <>
+    <AuthProvider>
       <DoubleHeader setpageTracker={setpageTracker} />
-      {content}
+        {content}
       <FooterCentered />
       <AuthModal opened={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
-    </>
+    </AuthProvider>
   );
 };
 
