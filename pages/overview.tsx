@@ -4,7 +4,7 @@ import { theme } from "../theme";
 import { HeroBullets } from "./lib";
 
 //boilerplate
-export default function Waitlist() {
+export default function Overview() {
   return (
     <MantineProvider theme={theme} defaultColorScheme="dark">
         <HeroBullets />

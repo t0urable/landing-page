@@ -9,9 +9,11 @@ import {
   TextInput,
   rem,
   keys,
+  
 } from '@mantine/core';
 import { IconSelector, IconChevronDown, IconChevronUp, IconSearch } from '@tabler/icons-react';
 import classes from './TableSort.module.css';
+import { supabase } from '../../../src/supabaseClient';
 
 interface RowData {
   name: string;
@@ -76,6 +78,7 @@ function sortData(
   );
 }
 
+
 export function TableSort({ data }: { data: RowData[] }) {
   const [search, setSearch] = useState('');
   const [sortedData, setSortedData] = useState(data);
@@ -99,69 +102,102 @@ export function TableSort({ data }: { data: RowData[] }) {
     setSortedData(sortData(data, { sortBy, reversed: reverseSortDirection, search: value }));
   };
 
-  const rows = sortedData.map((row) => (
-    <Table.Tr key={row.name}>
-      <Table.Td>{row.name}</Table.Td>
-      {/* for additional search terms if needed
+  const deletePdf = async (pdfName) => {
+    try {
+      let { error } = await supabase
+        .storage
+        .from('piano-pdfs')
+        .remove([pdfName]);
+  
+      if (error) {
+        throw error;
+      } else {
+        alert('PDF deleted successfully!');
+        // Update local state to reflect the change
+        setSortedData(sortedData.filter(item => item.name !== pdfName));
+      }
+    } catch (error) {
+      alert('Failed to delete PDF: ' + error.message);
+    }
+  };
 
-      {/* <Table.Td>{row.file_size}</Table.Td>
-      <Table.Td>{row.company}</Table.Td> */}
-    </Table.Tr>
-  ));
+  const renamePdf = async (oldName, newName) => {
+    if (!newName.trim()) {
+        alert('Please enter a valid new name.');
+        return;
+    }
+
+    try {
+        const response = await axios.put(`/api/files/${oldName}/${newName}`);
+        if (response.data) {
+            alert('PDF renamed successfully!');
+            // Update the local state to reflect the renamed file
+            setSortedData(sortedData.map(item => {
+                if (item.name === oldName) {
+                    return { ...item, name: newName };
+                }
+                return item;
+            }));
+        }
+    } catch (error) {
+        alert('Failed to rename PDF: ' + error.message);
+    }
+};
+
+const rows = sortedData.map((row) => {
+  const [newName, setNewName] = useState(row.name); 
 
   return (
-    <ScrollArea>
-      <TextInput
-        placeholder="Search by any field"
-        mb="md"
-        leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
-        value={search}
-        onChange={handleSearchChange}
-      />
-      <Table horizontalSpacing="md" verticalSpacing="xs" miw={700} layout="fixed">
-        <Table.Tbody>
-          <Table.Tr>
-            <Th
-              sorted={sortBy === 'name'}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting('name')}
-            >
-              Name
-            </Th>
-            {
-            
-            /* for additional search terms if needed
-            
-            /* <Th
-              sorted={sortBy === 'file_size'}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting('file_size')}
-            >
-              Email
-            </Th>
-            <Th
-              sorted={sortBy === 'company'}
-              reversed={reverseSortDirection}
-              onSort={() => setSorting('company')}
-            >
-              Company
-            </Th> */}
-          </Table.Tr>
-        </Table.Tbody>
-        <Table.Tbody>
-          {rows.length > 0 ? (
-            rows
-          ) : (
-            <Table.Tr>
-              <Table.Td colSpan={data.length > 0 ? Object.keys(data[0]).length : 1}>
-                <Text fw={500} ta="center">
-                  Nothing found
-                </Text>
-              </Table.Td>
-            </Table.Tr>
-          )}
-        </Table.Tbody>
-      </Table>
-    </ScrollArea>
+      <Table.Tr key={row.name}>
+          <Table.Td>{row.name}</Table.Td>
+          <Table.Td>
+              <input
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  style={{ marginRight: '10px' }}
+              />
+              <button onClick={() => renamePdf(row.name, newName)}>Rename</button>
+          </Table.Td>
+          <Table.Td>
+              <button onClick={() => deletePdf(row.name)}>Delete</button>
+          </Table.Td>
+      </Table.Tr>
   );
-}
+});
+
+
+return (
+  <ScrollArea>
+    <TextInput
+      placeholder="Search by any field"
+      mb="md"
+      leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+      value={search}
+      onChange={handleSearchChange}
+    />
+    <Table horizontalSpacing="md" verticalSpacing="xs" miw={700} layout="fixed">
+      <Table.Tbody>
+        <Table.Tr>
+          <Th
+            sorted={sortBy === 'name'}
+            reversed={reverseSortDirection}
+            onSort={() => setSorting('name')}
+          >
+            Name
+          </Th>
+        </Table.Tr>
+      </Table.Tbody>
+      <Table.Tbody>
+        {rows.length > 0 ? rows : (
+          <Table.Tr>
+            <Table.Td colSpan={data.length > 0 ? Object.keys(data[0]).length : 1}>
+              <Text fw={500} ta="center">
+                Nothing found
+              </Text>
+            </Table.Td>
+          </Table.Tr>
+        )}
+      </Table.Tbody>
+    </Table>
+  </ScrollArea>
+)};

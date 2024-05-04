@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
-import { Container, Anchor, Group, Burger, Box } from '@mantine/core';
+import React, { useEffect, useState } from 'react';
+import { Container, Anchor, Group, Burger, Box, Button } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from './DoubleHeader.module.css';
 import Image from 'next/image';
+import { useAuth } from "../../../src/AuthContext";
+import UpdateNameModal from '../../../src/components/UpdateNameModal';
 
 const mainLinks = [
   { link: '/', label: 'Home' },
@@ -15,9 +17,18 @@ interface DoubleHeaderProps {
   setpageTracker: (index: number) => void;
 }
 
-export function DoubleHeader({setpageTracker}: DoubleHeaderProps) {
+export function DoubleHeader({ setpageTracker }: DoubleHeaderProps) {
   const [opened, { toggle }] = useDisclosure(false);
   const [active, setActive] = useState(0);
+  const { currentUser } = useAuth(); 
+  const [displayName, setDisplayName] = useState('');
+  const [modalOpen, setModalOpen] = useState(false); // State to control the modal visibility
+
+  useEffect(() => {
+    setDisplayName(currentUser?.displayName || currentUser?.email || 'Guest');
+  }, [currentUser]);
+
+  const toggleModal = () => setModalOpen(!modalOpen); // Function to toggle the modal
 
   const mainItems = mainLinks.map((item, index) => (
     <Anchor<'a'>
@@ -28,12 +39,7 @@ export function DoubleHeader({setpageTracker}: DoubleHeaderProps) {
       onClick={(event) => {
         event.preventDefault();
         setActive(index);
-
-        //this function passes the current index to app.tsx
         setpageTracker(index);
-
-        //debugging
-        console.log(index);
       }}
     >
       {item.label}
@@ -43,7 +49,12 @@ export function DoubleHeader({setpageTracker}: DoubleHeaderProps) {
   return (
     <header className={classes.header}>
       <Container className={classes.inner}>
-        <Image src = "/SubitoLogo.png" alt="Subito Icon" width = {100} height = {100}></Image>
+        <Image src="/SubitoLogo.png" alt="Subito Icon" width={100} height={100}></Image>
+        <p>Welcome {displayName}</p>
+        {!currentUser && (
+          <Button onClick={toggleModal}>Sign In</Button> // Show sign in button if no user is logged in
+        )}
+        {modalOpen && <UpdateNameModal onNameUpdate={setDisplayName} />} 
         <Box className={classes.links} visibleFrom="sm">
           <Group gap={0} justify="flex-end" className={classes.mainLinks}>
             {mainItems}

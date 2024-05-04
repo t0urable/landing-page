@@ -1,46 +1,61 @@
-import "@mantine/core/styles.css";
-import { useState } from 'react';
+// default imports
+import React, { useState, useEffect } from 'react';
 import { MantineProvider } from "@mantine/core";
+import "@mantine/core/styles.css";
 import { theme } from "../theme";
-import { DoubleHeader, FeaturesAsymmetrical } from "./lib";
-import { HeroBullets } from "./lib";
-import { FooterCentered } from "./lib";
-import { RetrievePDFs }  from "./customcomponents/retrievePDFs";
+import { AuthProvider , useAuth } from "../src/AuthContext";  // Ensure correct import of AuthProvider and useAuth
 
-//page imports
+//component imports
+import { DoubleHeader }from './lib'
+import { FooterCentered } from './lib'
+import AuthModal from '../src/components/AuthModal'; // Adjust path as necessary
+
+// Page imports
 import Music from './music';
 import Product from './product';
-import Waitlist from './waitlist';
+import Overview from './overview';
 
-export default function App({ Component, pageProps }: any) {
+const MainContent = ({ Component, pageProps }) => {
+  const { authUser } = useAuth();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-  // defining page tracker parent code, homepage set at default but active tracker in child component set at 1
+  useEffect(() => {
+    // Automatically open modal if the user is not logged in
+    setIsAuthModalOpen(!authUser);
+  }, [authUser]);
+
   const [pageTracker, setpageTracker] = useState(0);
-
   let content;
-  switch(pageTracker) {
+  switch (pageTracker) {
     case 1:
-      content = <Waitlist/>;
+      content = <Overview />;
       break;
     case 2:
-      content = <Music/>;
+      content = <Music />;
       break;
     case 3:
-      content = <Product/>;
+      content = <Product />;
       break;
     default:
-      content = (
-        <>
-          <Component {...pageProps} />
-        </>
-      )
+      content = <Component {...pageProps} />;
   }
 
   return (
-    <MantineProvider theme={theme} defaultColorScheme="dark">
-      <DoubleHeader setpageTracker = {setpageTracker}></DoubleHeader>
-        {content}
-      <FooterCentered></FooterCentered>
-    </MantineProvider>
+    <>
+      <DoubleHeader setpageTracker={setpageTracker} />
+      {content}
+      <FooterCentered />
+      <AuthModal opened={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+    </>
+  );
+};
+
+export default function App({ Component, pageProps }) {
+  return (
+    <AuthProvider>
+      <MantineProvider theme={theme} defaultColorScheme="dark">
+        <MainContent Component={Component} pageProps={pageProps} />
+      </MantineProvider>
+    </AuthProvider>
   );
 }

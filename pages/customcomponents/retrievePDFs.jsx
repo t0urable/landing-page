@@ -10,6 +10,9 @@ export function RetrievePDFs() {
 
     useEffect(() => {
         const fetchFiles = async () => {
+            //firebase fetch
+
+            // legacy implementation before migrating to firebase
             try {
                 const response = await fetch('https://localhost:3000/api/files');
                 if (!response.ok) {

@@ -6,6 +6,8 @@ const https = require('https');
 const fs = require('fs');
 const uploadRoutes = require('./routes/uploadroutes');
 const fileRoutes = require('./routes/fileroutes'); 
+const deleteroutes = require('./routes/deleteroutes');
+const updateroutes = require('./routes/updateroutes');
 const cors = require('cors');
 
 //CORs request
