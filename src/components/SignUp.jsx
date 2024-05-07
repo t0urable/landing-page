@@ -1,38 +1,44 @@
 import React, { useState } from 'react';
 import { auth } from '../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { PasswordStrength } from '../../pages/lib'; 
+import { PasswordStrength } from '../../pages/lib';
 
-const SignUp = () => {
+const SignUp = ({ onClose }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
-    const signUp = (e) => {
+    const signUp = async (e) => {
         e.preventDefault();
-        createUserWithEmailAndPassword(auth, email, password)
-            .then((response) => {
-                console.log('User Created', response);
-            })
-            .catch((error) => {
-                console.error('Failed to create:', error);
-            });
+        try {
+            const response = await createUserWithEmailAndPassword(auth, email, password);
+            console.log('User Created', response);
+            onClose(); // Close modal or handle post-sign-up logic
+        } catch (error) {
+            setError(error.message);
+        }
     };
 
     return (
-        <div className='sign-in-container'>
-            <form onSubmit={signUp}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+            <form onSubmit={signUp} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <h1>Create Account</h1>
                 <input 
                     type="email" 
                     placeholder='Enter your email' 
                     onChange={(e) => setEmail(e.target.value)}
                     value={email}
+                    aria-label="Email Address"
+                    style={{ margin: '10px 0', padding: '8px', width: '300px' }}
                 />
                 <PasswordStrength 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    aria-label="Password"
+                    style={{ margin: '10px 0', padding: '8px', width: '300px' }}
                 />
-                <button type="submit">Sign Up Here</button>
+                <button type="submit" style={{ marginTop: '20px', padding: '10px 20px' }}>Sign Up Here</button>
+                {error && <p style={{ color: 'red' }}>{error}</p>}
             </form>
         </div>
     );

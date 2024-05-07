@@ -14,6 +14,7 @@ import {
 import { IconSelector, IconChevronDown, IconChevronUp, IconSearch } from '@tabler/icons-react';
 import classes from './TableSort.module.css';
 import { supabase } from '../../../src/supabaseClient';
+import axios from 'axios';
 
 interface RowData {
   name: string;
@@ -113,7 +114,7 @@ export function TableSort({ data }: { data: RowData[] }) {
         throw error;
       } else {
         alert('PDF deleted successfully!');
-        // Update local state to reflect the change
+        
         setSortedData(sortedData.filter(item => item.name !== pdfName));
       }
     } catch (error) {

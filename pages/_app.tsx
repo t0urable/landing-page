@@ -1,13 +1,12 @@
-// default imports
+// Default imports
 import React, { useState, useEffect } from 'react';
 import { MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import { theme } from "../theme";
-import { AuthProvider , useAuth } from "../src/AuthContext";  // Ensure correct import of AuthProvider and useAuth
+import { AuthProvider, useAuth } from "../src/AuthContext";  // Combined import for clarity
 
-//component imports
-import { DoubleHeader }from './lib'
-import { FooterCentered } from './lib'
+// Component imports
+import { DoubleHeader, FooterCentered } from './lib';  // Assuming both are exported from './lib'
 import AuthModal from '../src/components/AuthModal'; // Adjust path as necessary
 
 // Page imports
@@ -15,16 +14,18 @@ import Music from './music';
 import Product from './product';
 import Overview from './overview';
 
-const MainContent = ({ Component, pageProps }) => {
-  const { authUser } = useAuth();
+const MainContent = ({ Component, pageProps }: { Component: React.ComponentType<any>, pageProps: any }) => {
+  const { currentUser } = useAuth();  // Correctly use useAuth
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   useEffect(() => {
     // Automatically open modal if the user is not logged in
-    setIsAuthModalOpen(!authUser);
-  }, [authUser]);
+    setIsAuthModalOpen(!currentUser);
+  }, [currentUser]);
 
-  const [pageTracker, setpageTracker] = useState(0);
+  const [pageTracker, setPageTracker] = useState(0);
+
+  // Determine which content to display based on pageTracker
   let content;
   switch (pageTracker) {
     case 1:
@@ -41,18 +42,18 @@ const MainContent = ({ Component, pageProps }) => {
   }
 
   return (
-    <AuthProvider>
-      <DoubleHeader setpageTracker={setpageTracker} />
-        {content}
+    <>
+      <DoubleHeader setpageTracker={setPageTracker} />
+      {content}
       <FooterCentered />
       <AuthModal opened={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
-    </AuthProvider>
+    </>
   );
 };
 
-export default function App({ Component, pageProps }) {
+export default function App({ Component, pageProps }: { Component: React.ComponentType<any>, pageProps: any }) {
   return (
-    <AuthProvider>
+    <AuthProvider>  
       <MantineProvider theme={theme} defaultColorScheme="dark">
         <MainContent Component={Component} pageProps={pageProps} />
       </MantineProvider>
